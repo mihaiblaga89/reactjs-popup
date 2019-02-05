@@ -267,7 +267,8 @@ export default class Popup extends React.PureComponent {
     render() {
         const { overlayStyle, closeOnDocumentClick, on } = this.props;
         const { modal } = this.state;
-        const overlay = this.state.isOpen && !(on.indexOf('hover') >= 0);
+        // const overlay = this.state.isOpen && !(on.indexOf('hover') >= 0);
+        const overlay = this.state.isOpen && closeOnDocumentClick;
         const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
         return [
             !!this.props.trigger && (
