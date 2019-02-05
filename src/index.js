@@ -83,7 +83,7 @@ export default class Popup extends React.PureComponent {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.open === nextProps.open) return;
-        if (nextProps.open) this.openPopup();
+        if (nextProps.open) this.openPopup(true);
         else this.closePopup();
     }
 
