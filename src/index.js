@@ -31,7 +31,7 @@ export default class Popup extends React.PureComponent {
         closeOnDocumentClick: true,
         repositionOnResize: true,
         closeOnEscape: true,
-        overridePreventCloseOnDocumentClick: false,
+        keepOpenOnClick: false,
         on: ['click'],
         contentStyle: {},
         arrowStyle: {},
@@ -83,7 +83,7 @@ export default class Popup extends React.PureComponent {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.open === nextProps.open) return;
-        if (nextProps.open) this.openPopup(true);
+        if (nextProps.open) this.openPopup();
         else this.closePopup();
     }
 
@@ -143,7 +143,8 @@ export default class Popup extends React.PureComponent {
     };
     onMouseLeave = () => {
         clearTimeout(this.timeOut);
-        const { mouseLeaveDelay } = this.props;
+        const { mouseLeaveDelay, keepOpenOnClick, openedBy } = this.props;
+        if (keepOpenOnClick && openedBy === 'click') return;
         this.timeOut = setTimeout(() => this.closePopup(), mouseLeaveDelay);
     };
 
@@ -273,7 +274,7 @@ export default class Popup extends React.PureComponent {
         const { modal, openedBy } = this.state;
         console.log('state', this.state);
         // const overlay = this.state.isOpen && !(on.indexOf('hover') >= 0);
-        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy !== 'hover';
+        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy === 'click';
         const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
         return [
             !!this.props.trigger && (
@@ -301,7 +302,7 @@ if (process.env.NODE_ENV !== 'production') {
         contentStyle: PropTypes.object,
         overlayStyle: PropTypes.object,
         className: PropTypes.string,
-        overridePreventCloseOnDocumentClick: PropTypes.bool,
+        keepOpenOnClick: PropTypes.bool,
         modal: PropTypes.bool,
         closeOnDocumentClick: PropTypes.bool,
         repositionOnResize: PropTypes.bool,
