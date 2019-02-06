@@ -223,8 +223,8 @@ export default class Popup extends React.PureComponent {
             },
         };
         if (!modal && on.indexOf('hover') >= 0) {
-            childrenElementProps.onMouseEnter = this.onMouseEnter;
-            childrenElementProps.onMouseLeave = this.onMouseLeave;
+            childrenElementProps.onMouseOver = this.onMouseEnter;
+            childrenElementProps.onMouseOut = this.onMouseLeave;
         }
         return childrenElementProps;
     };
@@ -238,8 +238,8 @@ export default class Popup extends React.PureComponent {
                     triggerProps.onClick = this.togglePopup;
                     break;
                 case 'hover':
-                    triggerProps.onMouseEnter = this.onMouseEnter;
-                    triggerProps.onMouseLeave = this.onMouseLeave;
+                    triggerProps.onMouseOver = this.onMouseEnter;
+                    triggerProps.onMouseOut = this.onMouseLeave;
                     break;
                 case 'focus':
                     triggerProps.onFocus = this.onMouseEnter;
@@ -273,8 +273,7 @@ export default class Popup extends React.PureComponent {
         const { overlayStyle, closeOnDocumentClick, on } = this.props;
         const { modal, openedBy } = this.state;
         console.log('state', this.state);
-        // const overlay = this.state.isOpen && !(on.indexOf('hover') >= 0);
-        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy === 'click';
+        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy !== 'hover';
         const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
         return [
             !!this.props.trigger && (
