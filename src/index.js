@@ -125,6 +125,7 @@ export default class Popup extends React.PureComponent {
         if (typeof document !== 'undefined') {
             const element = document.getElementsByClassName('popup-content');
             if (element) {
+                console.log('el', element);
                 element.parentNode.removeChild(element);
             }
         }
