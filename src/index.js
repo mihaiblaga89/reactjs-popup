@@ -127,13 +127,13 @@ export default class Popup extends React.PureComponent {
         else this.openPopup(true);
     };
     openPopup = byClick => {
-        if (typeof document !== 'undefined') {
-            const element = document.getElementsByClassName('popup-content');
-            if (element.length) {
-                console.log('el', element);
-                element[0].parentNode.removeChild(element[0]);
-            }
-        }
+        // if (typeof document !== 'undefined') {
+        //     const element = document.getElementsByClassName('popup-content');
+        //     if (element.length) {
+        //         console.log('el', element);
+        //         element[0].parentNode.removeChild(element[0]);
+        //     }
+        // }
 
         if (this.state.isOpen || this.props.disabled) return;
         this.setState({ isOpen: true, openedBy: byClick ? 'click' : 'hover' }, () => {
@@ -317,10 +317,11 @@ export default class Popup extends React.PureComponent {
         const { modal, openedBy, isOpen } = this.state;
         console.log('state', this.state);
         const overlay = this.state.isOpen && closeOnDocumentClick && openedBy !== 'hover';
-        const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
         if (overlay && !this.listenerAdded) {
             this.listenerAdded = true;
             document.addEventListener('mousedown', this.onDocumentClick);
+        } else if (!overlay && this.listenerAdded) {
+            document.removeEventListener('mousedown', this.onDocumentClick);
         }
         return [
             !!this.props.trigger && (
