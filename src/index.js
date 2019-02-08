@@ -232,24 +232,42 @@ export default class Popup extends React.PureComponent {
         const triggerProps = { key: 'T' };
         const { on, trigger } = this.props;
         const onAsArray = Array.isArray(on) ? on : [on];
-        for (let i = 0, len = onAsArray.length; i < len; i++) {
-            switch (onAsArray[i]) {
-                case 'click':
-                    triggerProps.onClick = this.togglePopup;
-                    break;
-                case 'hover':
-                    triggerProps.onMouseOver = this.onMouseEnter;
-                    triggerProps.onMouseOut = this.onMouseLeave;
-                    break;
-                case 'focus':
-                    triggerProps.onFocus = this.onMouseEnter;
-                    break;
-            }
-        }
+        // for (let i = 0, len = onAsArray.length; i < len; i++) {
+        //     switch (onAsArray[i]) {
+        //         case 'click':
+        //             triggerProps.onClick = this.togglePopup;
+        //             break;
+        //         case 'hover':
+        //             triggerProps.onMouseOver = this.onMouseEnter;
+        //             triggerProps.onMouseOut = this.onMouseLeave;
+        //             break;
+        //         case 'focus':
+        //             triggerProps.onFocus = this.onMouseEnter;
+        //             break;
+        //     }
+        // }
 
-        if (typeof trigger === 'function') return React.cloneElement(trigger(this.state.isOpen), triggerProps);
+        // if (typeof trigger === 'function')
+        //     return (
+        //         <div
+        //             onClick={onAsArray.includes('click') ? this.togglePopup : null}
+        //             onMouseOver={onAsArray.includes('hover') ? this.onMouseEnter : null}
+        //             onMouseOut={onAsArray.includes('hover') ? this.onMouseLeave : null}
+        //             onFocus={onAsArray.includes('focus') ? this.onMouseEnter : null}>
+        //             {React.cloneElement(trigger(this.state.isOpen), triggerProps)}
+        //         </div>
+        //     );
 
-        return React.cloneElement(trigger, triggerProps);
+        return (
+            <div
+                onClick={onAsArray.includes('click') ? this.togglePopup : null}
+                onMouseOver={onAsArray.includes('hover') ? this.onMouseEnter : null}
+                onMouseOut={onAsArray.includes('hover') ? this.onMouseLeave : null}
+                onFocus={onAsArray.includes('focus') ? this.onMouseEnter : null}
+                key="T">
+                {trigger}
+            </div>
+        );
     };
 
     renderContent = () => {
