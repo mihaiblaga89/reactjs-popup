@@ -153,7 +153,8 @@ export default class Popup extends React.PureComponent {
         //     return;
         // }
         clearTimeout(this.timeOut);
-        const { mouseLeaveDelay, keepOpenOnClick, openedBy } = this.props;
+        const { mouseLeaveDelay, keepOpenOnClick } = this.props;
+        const { openedBy } = this.state;
         if (keepOpenOnClick && openedBy === 'click') return;
         this.timeOut = setTimeout(() => this.closePopup(), mouseLeaveDelay);
     };
