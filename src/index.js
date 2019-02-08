@@ -146,12 +146,12 @@ export default class Popup extends React.PureComponent {
         }
     };
     onMouseLeave = event => {
-        const e = event.toElement || event.relatedTarget;
-        console.log('rel', e);
-        console.log('ref', this.TriggerEl);
-        if (e.parentNode.parentNode.parentNode.parentNode == this.TriggerEl || e == this.TriggerEl) {
-            return;
-        }
+        // const e = event.toElement || event.relatedTarget;
+        // console.log('rel', e);
+        // console.log('ref', this.TriggerEl);
+        // if (e.parentNode.parentNode.parentNode.parentNode == this.TriggerEl || e == this.TriggerEl) {
+        //     return;
+        // }
         clearTimeout(this.timeOut);
         const { mouseLeaveDelay, keepOpenOnClick, openedBy } = this.props;
         if (keepOpenOnClick && openedBy === 'click') return;
@@ -271,8 +271,8 @@ export default class Popup extends React.PureComponent {
         return (
             <div
                 onClick={onAsArray.includes('click') ? this.togglePopup : null}
-                onMouseOver={onAsArray.includes('hover') ? this.onMouseEnter : null}
-                onMouseOut={onAsArray.includes('hover') ? this.onMouseLeave : null}
+                onMouseEnter={onAsArray.includes('hover') ? this.onMouseEnter : null}
+                onMouseLeave={onAsArray.includes('hover') ? this.onMouseLeave : null}
                 onFocus={onAsArray.includes('focus') ? this.onMouseEnter : null}
                 key="T">
                 {trigger}
