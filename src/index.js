@@ -123,7 +123,7 @@ export default class Popup extends React.PureComponent {
     };
     openPopup = byClick => {
         if (typeof document !== 'undefined') {
-            const element = document.getElementsByClassName('popup-overlay');
+            const element = document.getElementsByClassName('popup-content');
             element.parentNode.removeChild(element);
         }
 
