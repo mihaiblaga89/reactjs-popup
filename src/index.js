@@ -136,7 +136,8 @@ export default class Popup extends React.PureComponent {
             this.resetScroll();
         });
     };
-    onMouseEnter = () => {
+    onMouseEnter = event => {
+        console.log('event', event);
         const { isOpen } = this.state;
         if (!isOpen) {
             clearTimeout(this.timeOut);
