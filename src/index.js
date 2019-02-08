@@ -115,7 +115,10 @@ export default class Popup extends React.PureComponent {
     };
 
     togglePopup = () => {
-        if (this.state.isOpen) this.closePopup();
+        const { isOpen } = this.state;
+        const { keepOpenOnClick, openedBy } = this.props;
+        if (isOpen && keepOpenOnClick && openedBy === 'hover') return;
+        if (isOpen) this.closePopup();
         else this.openPopup(true);
     };
     openPopup = byClick => {
