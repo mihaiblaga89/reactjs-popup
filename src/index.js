@@ -61,6 +61,7 @@ export default class Popup extends React.PureComponent {
         this.setArrowRef = r => (this.ArrowEl = r);
         this.setHelperRef = r => (this.HelperEl = r);
         this.timeOut = 0;
+        this.listenerAdded = false;
     }
 
     componentDidMount() {
@@ -72,6 +73,10 @@ export default class Popup extends React.PureComponent {
         if (repositionOnResize) {
             window.addEventListener('resize', this.repositionOnResize);
         }
+    }
+
+    componentWillUnmount() {
+        this.listenerAdded && document.removeEventListener('mousedown', this.onDocumentClick);
     }
 
     repositionOnResize = () => {
@@ -301,6 +306,7 @@ export default class Popup extends React.PureComponent {
     };
 
     onDocumentClick = () => {
+        console.log('doc click');
         const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
         if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
         this.closePopup(true);
@@ -308,10 +314,14 @@ export default class Popup extends React.PureComponent {
 
     render() {
         const { overlayStyle, closeOnDocumentClick, on } = this.props;
-        const { modal, openedBy } = this.state;
+        const { modal, openedBy, isOpen } = this.state;
         console.log('state', this.state);
         const overlay = this.state.isOpen && closeOnDocumentClick && openedBy !== 'hover';
         const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
+        if (overlay && !this.listenerAdded) {
+            this.listenerAdded = true;
+            document.addEventListener('mousedown', this.onDocumentClick);
+        }
         return [
             !!this.props.trigger && (
                 <Ref innerRef={this.setTriggerRef} key="R">
@@ -319,11 +329,6 @@ export default class Popup extends React.PureComponent {
                 </Ref>
             ),
             this.state.isOpen && <div key="H" style={{ position: 'absolute', top: '0px', left: '0px' }} ref={this.setHelperRef} />,
-            overlay && (
-                <div key="O" className="popup-overlay" style={Object.assign({}, ovStyle, overlayStyle)} onClick={this.onDocumentClick}>
-                    {modal && this.renderContent()}
-                </div>
-            ),
             this.state.isOpen && !modal && this.renderContent(),
         ];
     }
