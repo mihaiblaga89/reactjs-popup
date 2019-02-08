@@ -316,11 +316,12 @@ export default class Popup extends React.PureComponent {
         const { overlayStyle, closeOnDocumentClick, on } = this.props;
         const { modal, openedBy, isOpen } = this.state;
         console.log('state', this.state);
-        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy !== 'hover';
+        const overlay = this.state.isOpen && closeOnDocumentClick && openedBy === 'click';
         if (overlay && !this.listenerAdded) {
             this.listenerAdded = true;
             document.addEventListener('mousedown', this.onDocumentClick);
         } else if (!overlay && this.listenerAdded) {
+            this.listenerAdded = false;
             document.removeEventListener('mousedown', this.onDocumentClick);
         }
         return [
