@@ -122,6 +122,11 @@ export default class Popup extends React.PureComponent {
         else this.openPopup(true);
     };
     openPopup = byClick => {
+        if (typeof document !== 'undefined') {
+            const element = document.getElementsByClassName('popup-overlay');
+            element.parentNode.removeChild(element);
+        }
+
         if (this.state.isOpen || this.props.disabled) return;
         this.setState({ isOpen: true, openedBy: byClick ? 'click' : 'hover' }, () => {
             this.setPosition();
