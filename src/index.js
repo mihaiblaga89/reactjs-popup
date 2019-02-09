@@ -153,15 +153,16 @@ export default class Popup extends React.PureComponent {
         //         element[0].parentNode.removeChild(element[0]);
         //     }
         // }
-
-        if (this.state.isOpen || this.props.disabled) return;
+        const { keepOnlyOneInstanceOpen, disabled, onOpen } = this.props;
+        const { isOpen } = this.state;
+        if (isOpen || disabled) return;
         if (keepOnlyOneInstanceOpen && typeof document !== 'undefined') {
             const event = new Event('closeOtherPopovers', { whatToKeep: this.uuid });
             document.dispatchEvent(event);
         }
         this.setState({ isOpen: true, openedBy: byClick ? 'click' : 'hover' }, () => {
             this.setPosition();
-            this.props.onOpen();
+            onOpen && onOpen();
             this.lockScroll();
         });
     };
