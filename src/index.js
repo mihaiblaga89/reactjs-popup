@@ -18,6 +18,14 @@ const POSITION_TYPES = [
     'left bottom',
 ];
 
+function makeid() {
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 5; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 export default class Popup extends React.PureComponent {
     static defaultProps = {
         children: () => <span> Your Content Here !!</span>,
@@ -29,6 +37,7 @@ export default class Popup extends React.PureComponent {
         preventClose: false,
         disabled: false,
         closeOnDocumentClick: true,
+        keepOnlyOneInstanceOpen: false,
         repositionOnResize: true,
         closeOnEscape: true,
         keepOpenOnClick: false,
@@ -62,10 +71,11 @@ export default class Popup extends React.PureComponent {
         this.setHelperRef = r => (this.HelperEl = r);
         this.timeOut = 0;
         this.listenerAdded = false;
+        this.uuid = makeid();
     }
 
     componentDidMount() {
-        const { closeOnEscape, defaultOpen, repositionOnResize } = this.props;
+        const { closeOnEscape, defaultOpen, repositionOnResize, keepOnlyOneInstanceOpen } = this.props;
         if (defaultOpen) this.setPosition();
         if (closeOnEscape) {
             window.addEventListener('keyup', this.onEscape);
@@ -73,10 +83,19 @@ export default class Popup extends React.PureComponent {
         if (repositionOnResize) {
             window.addEventListener('resize', this.repositionOnResize);
         }
+
+        if (keepOnlyOneInstanceOpen && typeof document !== 'undefined') {
+            document.addEventListener('closeOtherPopovers', event => {
+                if (event.whatToKeep === this.uuid) return;
+                this.closePopup(true);
+            });
+        }
     }
 
     componentWillUnmount() {
-        this.listenerAdded && document.removeEventListener('mousedown', this.onDocumentClick);
+        if (typeof document !== 'undefined') {
+            this.listenerAdded && document.removeEventListener('mousedown', this.onDocumentClick);
+        }
     }
 
     repositionOnResize = () => {
@@ -136,6 +155,10 @@ export default class Popup extends React.PureComponent {
         // }
 
         if (this.state.isOpen || this.props.disabled) return;
+        if (keepOnlyOneInstanceOpen && typeof document !== 'undefined') {
+            const event = new Event('closeOtherPopovers', { whatToKeep: this.uuid });
+            document.dispatchEvent(event);
+        }
         this.setState({ isOpen: true, openedBy: byClick ? 'click' : 'hover' }, () => {
             this.setPosition();
             this.props.onOpen();
@@ -256,31 +279,6 @@ export default class Popup extends React.PureComponent {
         const triggerProps = { key: 'T' };
         const { on, trigger } = this.props;
         const onAsArray = Array.isArray(on) ? on : [on];
-        // for (let i = 0, len = onAsArray.length; i < len; i++) {
-        //     switch (onAsArray[i]) {
-        //         case 'click':
-        //             triggerProps.onClick = this.togglePopup;
-        //             break;
-        //         case 'hover':
-        //             triggerProps.onMouseOver = this.onMouseEnter;
-        //             triggerProps.onMouseOut = this.onMouseLeave;
-        //             break;
-        //         case 'focus':
-        //             triggerProps.onFocus = this.onMouseEnter;
-        //             break;
-        //     }
-        // }
-
-        // if (typeof trigger === 'function')
-        //     return (
-        //         <div
-        //             onClick={onAsArray.includes('click') ? this.togglePopup : null}
-        //             onMouseOver={onAsArray.includes('hover') ? this.onMouseEnter : null}
-        //             onMouseOut={onAsArray.includes('hover') ? this.onMouseLeave : null}
-        //             onFocus={onAsArray.includes('focus') ? this.onMouseEnter : null}>
-        //             {React.cloneElement(trigger(this.state.isOpen), triggerProps)}
-        //         </div>
-        //     );
 
         return (
             <div
@@ -348,6 +346,7 @@ if (process.env.NODE_ENV !== 'production') {
         keepOpenOnClick: PropTypes.bool,
         modal: PropTypes.bool,
         closeOnDocumentClick: PropTypes.bool,
+        keepOnlyOneInstanceOpen: PropTypes.bool,
         repositionOnResize: PropTypes.bool,
         disabled: PropTypes.bool,
         lockScroll: PropTypes.bool,
