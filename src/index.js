@@ -296,7 +296,7 @@ export default class Popup extends React.PureComponent {
 
     onDocumentClick = event => {
         if ((this.ContentEl && !this.ContentEl.contains(event.target)) || (this.TriggerEl && !this.TriggerEl.contains(event.target))) {
-            console.log('doc click', event);
+            console.log('doc click', event, typeof this.ContentEl);
             const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
             if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
             this.closePopup(true);
