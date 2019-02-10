@@ -27,7 +27,6 @@ function makeid() {
 }
 
 function clickedInsideOrChildren(element, toFind) {
-    console.log(element, toFind, element == toFind);
     if (element == toFind) return true;
     if (element.children && element.children.length > 0) {
         let found = false;
@@ -311,7 +310,6 @@ export default class Popup extends React.PureComponent {
             !clickedInsideOrChildren(findDOMNode(this.ContentEl), event.target) &&
             !clickedInsideOrChildren(findDOMNode(this.TriggerEl), event.target)
         ) {
-            console.log('doc clicked', event, typeof this.ContentEl, this.ContentEl.children);
             const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
             if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
             this.closePopup(true);
