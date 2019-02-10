@@ -26,6 +26,19 @@ function makeid() {
     return text;
 }
 
+function clickedInsideOrChildren(element, toFind) {
+    console.log(element, toFind, element == toFind);
+    if (element == toFind) return true;
+    if (element.children && element.children.length > 0) {
+        let found = false;
+        for (let child of element.children) {
+            if (clickedInsideOrChildren(child, toFind)) found = true;
+        }
+        return found;
+    }
+    return false;
+}
+
 export default class Popup extends React.PureComponent {
     static defaultProps = {
         children: () => <span> Your Content Here !!</span>,
@@ -170,7 +183,6 @@ export default class Popup extends React.PureComponent {
         });
     };
     onMouseEnter = event => {
-        console.log('event', event);
         const { isOpen } = this.state;
         clearTimeout(this.timeOut);
         if (!isOpen) {
@@ -295,8 +307,11 @@ export default class Popup extends React.PureComponent {
     };
 
     onDocumentClick = event => {
-        if ((this.ContentEl && !this.ContentEl.contains(event.target)) || (this.TriggerEl && !this.TriggerEl.contains(event.target))) {
-            console.log('doc click', event, typeof this.ContentEl, JSON.stringify(this.ContentEl));
+        if (
+            !clickedInsideOrChildren(findDOMNode(this.ContentEl), event.target) &&
+            !clickedInsideOrChildren(findDOMNode(this.TriggerEl), event.target)
+        ) {
+            console.log('doc clicked', event, typeof this.ContentEl, this.ContentEl.children);
             const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
             if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
             this.closePopup(true);
@@ -306,7 +321,6 @@ export default class Popup extends React.PureComponent {
     render() {
         const { overlayStyle, closeOnDocumentClick, on } = this.props;
         const { modal, openedBy, isOpen } = this.state;
-        console.log('state', this.state);
         const overlay = this.state.isOpen && closeOnDocumentClick && openedBy === 'click';
         if (overlay && !this.listenerAdded) {
             this.listenerAdded = true;

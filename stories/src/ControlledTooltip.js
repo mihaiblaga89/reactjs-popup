@@ -10,9 +10,7 @@ export default class ControlledPopup extends React.Component {
         return (
             <Popup
                 trigger={<button className="button">Controlled Tooltip </button>}
-                open={false}
                 position="right center"
-                preventClose
                 //open={this.state.open}
                 closeOnDocumentClick
                 // onClose={this.closeModal}
