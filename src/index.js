@@ -107,7 +107,7 @@ export default class Popup extends React.PureComponent {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.open === nextProps.open) return;
-        if (nextProps.open) this.openPopup();
+        if (nextProps.open) this.openPopup(null);
         else this.closePopup();
     }
 
@@ -146,13 +146,16 @@ export default class Popup extends React.PureComponent {
         else this.openPopup(true);
     };
     openPopup = byClick => {
-        const { keepOnlyOneInstanceOpen, disabled, onOpen } = this.props;
+        const { keepOnlyOneInstanceOpen, disabled, onOpen, on } = this.props;
         const { isOpen } = this.state;
         if (isOpen || disabled) return;
         if (keepOnlyOneInstanceOpen && typeof document !== 'undefined') {
             const event = new Event('closeOtherPopovers', { whatToKeep: this.uuid });
             document.dispatchEvent(event);
         }
+
+        if (byClick === null && on.length === 1 && on[0] === 'click') byClick = 'click';
+
         this.setState({ isOpen: true, openedBy: byClick ? 'click' : 'hover' }, () => {
             this.setPosition();
             onOpen && onOpen();
