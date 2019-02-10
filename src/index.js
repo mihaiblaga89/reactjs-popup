@@ -146,13 +146,6 @@ export default class Popup extends React.PureComponent {
         else this.openPopup(true);
     };
     openPopup = byClick => {
-        // if (typeof document !== 'undefined') {
-        //     const element = document.getElementsByClassName('popup-content');
-        //     if (element.length) {
-        //         console.log('el', element);
-        //         element[0].parentNode.removeChild(element[0]);
-        //     }
-        // }
         const { keepOnlyOneInstanceOpen, disabled, onOpen } = this.props;
         const { isOpen } = this.state;
         if (isOpen || disabled) return;
@@ -176,19 +169,13 @@ export default class Popup extends React.PureComponent {
     onMouseEnter = event => {
         console.log('event', event);
         const { isOpen } = this.state;
+        clearTimeout(this.timeOut);
         if (!isOpen) {
-            clearTimeout(this.timeOut);
             const { mouseEnterDelay } = this.props;
             this.timeOut = setTimeout(() => this.openPopup(), mouseEnterDelay);
         }
     };
     onMouseLeave = event => {
-        // const e = event.toElement || event.relatedTarget;
-        // console.log('rel', e);
-        // console.log('ref', this.TriggerEl);
-        // if (e.parentNode.parentNode.parentNode.parentNode == this.TriggerEl || e == this.TriggerEl) {
-        //     return;
-        // }
         clearTimeout(this.timeOut);
         const { mouseLeaveDelay, keepOpenOnClick } = this.props;
         const { openedBy } = this.state;
