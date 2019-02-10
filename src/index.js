@@ -294,11 +294,13 @@ export default class Popup extends React.PureComponent {
         );
     };
 
-    onDocumentClick = () => {
-        console.log('doc click');
-        const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
-        if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
-        this.closePopup(true);
+    onDocumentClick = event => {
+        if ((this.ContentEl && !this.ContentEl.contains(event.target)) || (this.TriggerEl && !this.TriggerEl.contains(event.target))) {
+            console.log('doc click');
+            const { closeOnDocumentClick, overridePreventCloseOnDocumentClick, preventClose } = this.props;
+            if ((preventClose && !overridePreventCloseOnDocumentClick) || !closeOnDocumentClick) return;
+            this.closePopup(true);
+        }
     };
 
     render() {
